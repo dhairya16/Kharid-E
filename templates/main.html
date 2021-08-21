@@ -1,0 +1,162 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Welcome to Kharid-E</title>
+
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+	<style type="text/css">
+	.btn {
+		border-radius: 0px;
+	}
+	#cart-icon {
+		color: black;
+		font-size: 20px;
+	}
+	.auth_link {
+		color: black;
+		text-decoration: none;
+	}
+	#logoutBtn {
+		color: indianred;
+		text-decoration: none;
+	}
+	#logo {
+		font-family: 'Pacifico', cursive;
+	}
+	a {
+		text-decoration:  none;
+		color: black;
+	}
+	.form-control, .btn {
+		min-height: 38px;
+		border-radius: 0px;
+	}
+
+</style>
+
+{% block head %} {% endblock %}
+
+<script src="https://kit.fontawesome.com/54a3e0f22b.js" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+	var user='{{ request.user }}'
+
+	function getToken(name) {
+		var cookieValue = null;
+		if (document.cookie && document.cookie !== '') {
+			var cookies = document.cookie.split(';');
+			for (var i = 0; i < cookies.length; i++) {
+				var cookie = cookies[i].trim();
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+		            	cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		            	break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+		var csrftoken = getToken('csrftoken')
+
+		// Cookie
+		function getCookie(name) {
+		    // Split cookie string and get all individual name=value pairs in an array
+		    var cookieArr = document.cookie.split(";");
+
+		    // Loop through the array elements
+		    for(var i = 0; i < cookieArr.length; i++) {
+		    	var cookiePair = cookieArr[i].split("=");
+
+		        /* Removing whitespace at the beginning of the cookie name
+		        and compare it with the given string */
+		        if(name == cookiePair[0].trim()) {
+		            // Decode the cookie value and return
+		            return decodeURIComponent(cookiePair[1]);
+		        }
+		    }
+
+		    // Return null if not found
+		    return null;
+		}
+		var cart = JSON.parse(getCookie('cart'))
+
+		if (cart == undefined){
+			cart = {}
+			console.log('Cart Created!', cart)
+			document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+		}
+		console.log('Cart:', cart)
+
+	</script>
+</head>
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-light">
+		<div class="container-fluid">
+			<a class="navbar-brand" id="logo" href="{% url 'store' %}">Kharid-E</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<li class="nav-item">
+						<a class="nav-link active" aria-current="page" href="{% url 'store' %}">Store</a>
+					</li>
+				</ul>
+				
+
+				<div class="form-inline my-2 my-lg-0">
+					
+					{% if request.user.is_authenticated %}
+
+					<!-- Example single danger button -->
+					<div class="btn-group dropstart">
+						<button type="button" class="dropdown-toggle mr-20" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="fas fa-user"></i>
+						</button>
+						<ul class="dropdown-menu">
+							<li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+							<li><a class="dropdown-item" href="{% url 'orders' %}">Orders</a></li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" id="logoutBtn" href="{% url 'logout' %}">Logout</a></li>
+						</ul>
+					</div>
+
+					
+					{% else %}
+					<a class="auth_link" href="{% url 'login' %}" >Login</a>/<a class="auth_link" href="{% url 'register' %}" >Register</a>
+					{% endif %}
+
+					<a id="cart-icon" href="{% url 'cart' %}">
+						<!-- <img id="cart-icon" src="{% static 'images/cart.png' %}"> -->
+						<i class="fas fa-shopping-cart"></i>
+					</a>
+					<span class="badge rounded-pill bg-dark">{{cartItems}}</span>
+					<!-- <span id="cart-total">{{ cartItems }}</span> -->
+				</div>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		<br>
+		{% block content %} {% endblock %}
+
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+
+	<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+</body>
+</html>

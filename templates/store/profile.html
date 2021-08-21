@@ -1,0 +1,27 @@
+{% extends 'store/profile_base.html' %}
+
+{% block extra %}
+
+<div class="row">
+
+	<div class="col-md-8 offset-md-2">
+		<div class="card shadow p-3 mb-5 bg-body rounded">
+			<div class="card-body">
+				<p>{{ customer.name }}</p>
+				<p>{{ customer.email }}</p>
+				<a href="{% url 'edit_profile' customer.id %}" class="btn text-secondary px-0 float-end "><i class="far fa-edit"></i></a>
+			</div>
+		</div>
+	</div>
+
+
+<!-- 	<div class="col-md-6">
+		<div class="card">
+			<div class="card-body">
+			</div>
+		</div>
+	</div>
+-->
+</div>
+
+{% endblock %}

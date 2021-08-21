@@ -1,0 +1,39 @@
+{% extends 'store/profile_base.html' %}
+
+{% block extra %}
+
+<h1 class="text-center">My Orders</h1>
+
+{% for order in orders %}
+<div class="card">
+	<div class="card card-body">
+		
+		<div class="row">
+			<div class="col">
+				<p>ORDER PLACED</p>
+				<p>{{order.date_ordered}}</p>
+			</div>
+			<div class="col">
+				<p>TOTAL</p>
+				<p>{{order.get_cart_total}}</p>
+			</div>
+			<div class="col">
+				<p>SHIP TO</p>
+				<p>{{customer.name}}</p>
+			</div>
+			<div class="col">
+				<p>TRANSACTION ID {{order.transaction_id}}</p>
+				<!-- <p>{{customer.name}}</p> -->
+			</div>
+		</div>
+		<!-- <div class="row">
+			<div class="col-md-2">
+				<button>view details</button>
+			</div>
+		</div> -->
+
+	</div>
+</div>
+{% endfor %}
+
+{% endblock %}
